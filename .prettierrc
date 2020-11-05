@@ -1,0 +1,4 @@
+{   //格式文件
+    'semi': false,
+    'singleQuote': true
+}
