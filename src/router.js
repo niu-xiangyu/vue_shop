@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from './components/Login.vue'
 import Home from './components/Home.vue'
+import Welcome from './components/Welcome.vue'
+import Users from './components/User/User.vue'
 Vue.use(Router)
 
 const router = new Router({
@@ -15,8 +17,19 @@ const router = new Router({
   },
   {
     path: '/home',
-    component: Home
+    component: Home, 
+    redirect: '/welcome',
+    children: [{ 
+      path: '/welcome',
+      component: Welcome 
+    },
+    {
+      path: '/users',
+      component: Users
+    }
+    ]
   }
+
   ]
 })
 // 路由导航守卫 控制页面访问权限
