@@ -49,7 +49,7 @@
             </el-tooltip>
             <!-- 设置按钮 -->
             <el-tooltip class="item" effect="dark" content="分配角色" placement="top-start" :enterable="false">
-              <el-button type="warning" icon="el-icon-setting" size="mini"></el-button>
+              <el-button type="warning" icon="el-icon-setting" size="mini" @click="fenpeiUser(scope.row)" ></el-button>
             </el-tooltip>
           </template>
         </el-table-column>
@@ -108,6 +108,23 @@
       <el-button type="primary" @click="commitChangeUser">确 定</el-button>
     </span>
   </el-dialog>
+      <!--分配用户  -->
+  <el-dialog title="分配用户" :visible.sync="fenpeiUserDialogVisable" width="50%" @close="closeFenpeiUserDialog">
+    <div>
+      <p>当前用户：{{fenpeiUserDialogdata.username}}</p>
+      <p>当前角色：{{fenpeiUserDialogdata.role_name}}</p>
+      <p>分配新角色:
+        <el-select v-model="selectRoleID" placeholder="请选择">
+          <el-option v-for="item in fenpeiUserData" :key="item.id" :label="item.roleName" :value="item.id">
+          </el-option>
+        </el-select>
+      </p> 
+    </div>
+    <div slot="footer">
+      <el-button @click="fenpeiUserDialogVisable = false">取 消</el-button>
+      <el-button type="primary" @click="fenpeiUserSaveInfo">确 定</el-button>
+    </div>
+  </el-dialog>
  </div>
 </template>
 <script>
@@ -151,7 +168,13 @@ export default {
       },
       // 修改用户信息界面中查询到用户信息
       changeUserFromData: {},
-      changeUserFromRules: {}
+      changeUserFromRules: {},
+      // 分配用户
+      fenpeiUserDialogVisable: false,
+      fenpeiUserDialogdata: {},
+      fenpeiUserData: [],
+      // 已选中的角色id值
+      selectRoleID: ''
     }
   },
   created() {
@@ -241,7 +264,28 @@ export default {
       }
       this.$message.success('删除成功');
       this.getUser();
-    }
+    },
+    // 分配用户
+    async fenpeiUser(row) {
+      this.fenpeiUserDialogdata = row;
+      const { data: res } = await this.$axios.get('roles');
+      if (res.meta.status !== 200) return this.$message.error('获取角色列表失败');
+      this.fenpeiUserData = res.data;
+      this.fenpeiUserDialogVisable = !this.fenpeiUserDialogVisable;
+    },
+      // 确定分配角色
+      async fenpeiUserSaveInfo() {
+        if (this.selectRoleID == null) return this.$message.error('请分配角色');
+        const { data: res } = await this.$axios.put('users/' + this.fenpeiUserDialogdata.id + '/role', { rid: this.selectRoleID });
+        if (res.meta.status !== 200) return this.$message.error('分配角色失败');
+        this.fenpeiUserDialogVisable = false;
+        this.getUser();
+      },
+        // 分配角色结束后重置对话框
+        closeFenpeiUserDialog() {
+          this.fenpeiUserDialogdata = {};
+          this.selectRoleID = '';
+        }
 
   }
 }

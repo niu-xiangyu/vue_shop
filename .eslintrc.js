@@ -20,7 +20,7 @@ module.exports = {
         'semi': 0,
         'eol-last': 0,
         'no-multiple-empty-lines': 0,
-        'vue/no-parsing-error': [2, { 'x-invalid-end-tag': false }]
-
+        'vue/no-parsing-error': [2, { 'x-invalid-end-tag': false }],
+        'vue/no-unused-vars': 0
     }
 }
