@@ -262,8 +262,8 @@ export default {
       if (res.meta.status !== 200) {
         return this.$message.error('删除失败');
       }
-      this.$message.success('删除成功');
       this.getUser();
+      this.$message.success('删除成功');
     },
     // 分配用户
     async fenpeiUser(row) {
@@ -294,6 +294,7 @@ export default {
 <style lang="less" scoped>
 .content {
   width: 100%;
+  margin: 15px;
   .el-row {
     display: flex;
     justify-content: space-between;
